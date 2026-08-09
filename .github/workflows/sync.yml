@@ -25,9 +25,9 @@
 
               echo "[1/3] 嘗試從 Private Repo REST API 抓取最新報告: ${REPORT_PATH}"
 
-              # 改用 Bearer 標頭並印出詳細狀態
+              # Classic PAT 使用 token 標頭
               HTTP_STATUS=$(curl -s -o "${REPORT_PATH}" -w "%{http_code}" \
-                -H "Authorization: Bearer ${PAT_TOKEN}" \
+                -H "Authorization: token ${PAT_TOKEN}" \
                 -H "Accept: application/vnd.github.v3.raw" \
                 -L "https://api.github.com/repos/BingFengHung/daily-github-trending/contents/${REPORT_PATH}")
 
