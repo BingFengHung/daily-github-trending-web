@@ -23,4 +23,6 @@
 3. **熱門清單完整彙整表格**（附帶可點擊 GitHub 專案超連結）
 
 ---
+[Home](https://bingfenghung.github.io/daily-github-trending-web)
+
 *每日更新時間：台灣標準時間 10:30 AM*
