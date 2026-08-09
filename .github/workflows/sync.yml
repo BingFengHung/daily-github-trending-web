@@ -19,7 +19,7 @@
             uses: actions/checkout@v4
             with:
               repository: 'BingFengHung/daily-github-trending'
-              token: ${{ secrets.MY_PAT_TOKEN }}
+              token: ${{ secrets.MY_PATH_TOKEN }}
               path: 'private-repo'
 
           - name: Copy Today's Report & Update Sidebar
