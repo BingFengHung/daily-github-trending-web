@@ -5,6 +5,7 @@ on:
     # 每天早上 07:45 執行 (在 Cloudflare 07:30 產出後 15 分鐘觸發)
     - cron: '17 02 * * *'
     - cron: '43 04 * * *'
+    - cron: '17 05 * * *'
   workflow_dispatch: # 支援手動按鈕觸發
 
 jobs:
