@@ -31,7 +31,7 @@ jobs:
           TARGET_REPORT="reports/${TODAY}.md"
 
           if [ ! -f "$SOURCE_REPORT" ]; then
-           echo "⚠️ 在 Private Repo 中未找到今日報告: ${SOURCE_REPORT}，跳過同步。"
+            echo "⚠️ 在 Private Repo 中未找到今日報告: ${SOURCE_REPORT}，跳過同步。"
             rm -rf private-repo
             exit 0
           fi
@@ -54,7 +54,7 @@ jobs:
             echo "" >> temp_sidebar.md
             echo "* 📅 **每日技術報告**" >> temp_sidebar.md
             echo "  * [${TODAY} 報告](reports/${TODAY}.md)" >> temp_sidebar.md
-            grep "reports/ _sidebar.md | grep -v "${TODAY}.md" >> temp_sidebar.md || true
+            grep "reports/" _sidebar.md | grep -v "${TODAY}.md" >> temp_sidebar.md || true
             mv temp_sidebar.md _sidebar.md
           fi
 
@@ -64,4 +64,3 @@ jobs:
           git add reports/ _sidebar.md
           git commit -m "docs: auto sync daily report (${TODAY})" || exit 0
           git push
-
