@@ -54,7 +54,7 @@ jobs:
             echo "" >> temp_sidebar.md
             echo "* 📅 **每日技術報告**" >> temp_sidebar.md
             echo "  * [${TODAY} 報告](reports/${TODAY}.md)" >> temp_sidebar.md
-            grep "  * \[" _sidebar.md | grep -v "README.md" >> temp_sidebar.md || true
+            grep "reports/ _sidebar.md | grep -v "${TODAY}.md" >> temp_sidebar.md || true
             mv temp_sidebar.md _sidebar.md
           fi
 
