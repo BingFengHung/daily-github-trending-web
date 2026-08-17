@@ -1,51 +1,247 @@
- <!DOCTYPE html>
-    <html lang="zh-TW">
-    <head>
-      <meta charset="UTF-8">
-      <title>🚀 GitHub Trending 每日 AI 報告儀表板</title>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-      <meta name="description" content="每日 GitHub 熱門技術與 AI 精選解讀儀表板">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>🚀 GitHub Trending 每日 AI 報告儀表板</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="每日 GitHub 熱門技術與 AI 精選解讀儀表板">
+  <!-- 支援 iOS Safe Area 與高解析度視口設定 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
 
-      <!-- PWA 標籤設定 -->
-      <link rel="manifest" href="manifest.json">
-      <meta name="theme-color" content="#42b983">
-      <meta name="apple-mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-status-bar-style" content="default">
-      <meta name="apple-mobile-web-app-title" content="AI 科技日報">
+  <!-- PWA 標籤設定 -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#42b983">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AI 科技日報">
 
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-    </head>
-    <body>
-      <div id="app">🚀 正在載入每日 AI 報告儀表板...</div>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
 
-      <script>
-        window.$docsify = {
-          name: '🚀 GitHub Trending 每日 AI 報告',
-          repo: 'https://github.com/BingFengHung/daily-github-trending-web',
-          loadSidebar: true,
-          autoHeader: true,
-          subMaxLevel: 3,
-          homepage: 'README.md',
-          search: {
-            maxAge: 86400000,
-            paths: 'auto',
-            placeholder: '🔍 搜尋技術關鍵字、Repo 名稱或語言...',
-            noData: '找不到相關報告！',
-            depth: 6
-          }
+  <style>
+    /* =========================================================
+       📱 iPhone 13 & 行動裝置選單體驗與 Safe Area 優化
+       ========================================================= */
+    :root {
+      --theme-color: #42b983;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    html, body {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    /* 手機與窄螢幕樣式調整 */
+    @media screen and (max-width: 768px) {
+      /* 內容區塊加上底部與安全區留白，避免浮動選單遮擋文字 */
+      .content {
+        padding-top: calc(16px + var(--safe-top)) !important;
+        padding-bottom: calc(90px + var(--safe-bottom)) !important;
+        padding-left: calc(16px + var(--safe-left)) !important;
+        padding-right: calc(16px + var(--safe-right)) !important;
+      }
+
+      /* 🎈 重新設計浮動選單按鈕 (FAB)：避開左下角邊緣與 iPhone Home 條，提供大觸控區 */
+      .sidebar-toggle {
+        position: fixed !important;
+        bottom: calc(24px + var(--safe-bottom)) !important;
+        left: calc(20px + var(--safe-left)) !important;
+        width: 52px !important;
+        height: 52px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+        backdrop-filter: blur(16px) saturate(180%) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 1001 !important;
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    box-shadow 0.2s ease,
+                    background-color 0.2s ease !important;
+      }
+
+      /* 點擊時的微動畫回饋 (Tactile Feedback) */
+      .sidebar-toggle:active {
+        transform: scale(0.92) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        background: rgba(245, 245, 245, 0.98) !important;
+      }
+
+      /* 按鈕內部圖示容器 */
+      .sidebar-toggle .sidebar-toggle-button {
+        width: 22px !important;
+        height: 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* 漢堡選單三條線 (乾淨流暢) */
+      .sidebar-toggle span {
+        display: block !important;
+        width: 20px !important;
+        height: 2.5px !important;
+        background-color: #34495e !important;
+        border-radius: 3px !important;
+        margin: 0 !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.2s ease,
+                    background-color 0.3s ease !important;
+        transform-origin: center !important;
+      }
+
+      /* 當側邊欄展開時 (Docsify 行動端為 body.close) */
+      body.close .sidebar-toggle {
+        background: rgba(255, 255, 255, 0.96) !important;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22) !important;
+        border-color: rgba(66, 185, 131, 0.4) !important;
+      }
+
+      /* 將漢堡選單三條線流暢變換為 '✕' 關閉圖示 */
+      body.close .sidebar-toggle span:nth-child(1) {
+        transform: translateY(7.75px) rotate(45deg) !important;
+        background-color: #42b983 !important;
+      }
+      body.close .sidebar-toggle span:nth-child(2) {
+        opacity: 0 !important;
+        transform: scaleX(0) !important;
+      }
+      body.close .sidebar-toggle span:nth-child(3) {
+        transform: translateY(-7.75px) rotate(-45deg) !important;
+        background-color: #42b983 !important;
+      }
+
+      /* 側邊欄抽屜容器優化 */
+      .sidebar {
+        top: 0 !important;
+        bottom: 0 !important;
+        left: -320px !important;
+        width: 300px !important;
+        max-width: 85vw !important;
+        padding-top: calc(24px + var(--safe-top)) !important;
+        padding-bottom: calc(90px + var(--safe-bottom)) !important;
+        padding-left: calc(16px + var(--safe-left)) !important;
+        padding-right: 16px !important;
+        box-sizing: border-box !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        backdrop-filter: blur(24px) !important;
+        box-shadow: 8px 0 32px rgba(0, 0, 0, 0.16) !important;
+        border-top-right-radius: 20px !important;
+        border-bottom-right-radius: 20px !important;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 1000 !important;
+      }
+
+      body.close .sidebar {
+        transform: translateX(320px) !important;
+      }
+
+      /* 側邊欄選項點擊面積增大，符合手指觸控標準 */
+      .sidebar ul li {
+        margin: 6px 0 !important;
+      }
+      .sidebar ul li a {
+        display: block !important;
+        padding: 9px 12px !important;
+        border-radius: 10px !important;
+        font-size: 15px !important;
+        line-height: 1.5 !important;
+        color: #34495e !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: background-color 0.15s ease, color 0.15s ease !important;
+      }
+      .sidebar ul li.active > a,
+      .sidebar ul li a:active {
+        background-color: rgba(66, 185, 131, 0.12) !important;
+        color: #42b983 !important;
+        font-weight: 600 !important;
+      }
+
+      /* 遮罩背景 (Backdrop Overlay) */
+      .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.45);
+        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 999;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body.close .sidebar-backdrop {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">🚀 正在載入每日 AI 報告儀表板...</div>
+
+  <!-- 點擊側邊欄外區域自動關閉的遮罩層 -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <script>
+    window.$docsify = {
+      name: '🚀 GitHub Trending 每日 AI 報告',
+      repo: 'https://github.com/BingFengHung/daily-github-trending-web',
+      loadSidebar: true,
+      autoHeader: true,
+      subMaxLevel: 3,
+      homepage: 'README.md',
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '🔍 搜尋技術關鍵字、Repo 名稱或語言...',
+        noData: '找不到相關報告！',
+        depth: 6
+      },
+      plugins: [
+        function(hook, vm) {
+          hook.ready(function() {
+            // 綁定點擊遮罩關閉側邊欄功能
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (backdrop) {
+              backdrop.addEventListener('click', function() {
+                document.body.classList.remove('close');
+              });
+            }
+          });
         }
-      </script>
+      ]
+    };
+  </script>
 
-      <!-- PWA Service Worker 註冊指令 -->
-      <script>
-        if (typeof navigator.serviceWorker !== 'undefined') {
-          navigator.serviceWorker.register('sw.js');
-        }
-      </script>
+  <!-- PWA Service Worker 註冊指令 -->
+  <script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 
-      <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-      <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-      <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
-    </body>
-    </html>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+</body>
+</html>
